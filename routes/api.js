@@ -7,6 +7,7 @@ router.get('/autoComplete', async (req, res, next) => {
     const keyword = req.query.keyword || ''
     const data = await googleTrends.autoComplete({
       keyword,
+      resolution: 'COUNTRY',
       geo: 'VN',
       hl: 'vi'
     })
@@ -21,7 +22,10 @@ router.get('/interestOverTime', async (req, res, next) => {
   try {
     const keyword = req.query.keyword || ''
     const data = await googleTrends.interestOverTime({
-      keyword
+      keyword,
+      resolution: 'COUNTRY',
+      geo: 'VN',
+      hl: 'vi'
     })
     res.send(data)
   } catch (error) {
@@ -35,8 +39,9 @@ router.get('/interestByRegion', async (req, res, next) => {
     const keyword = req.query.keyword || ''
     const data = await googleTrends.interestByRegion({
       keyword,
-      startTime: new Date('2017-02-01'),
-      endTime: new Date('2017-02-06'),
+      startTime: new Date(new Date().getTime() - 86400000),
+      endTime: new Date(),
+      resolution: 'COUNTRY',
       geo: 'VN',
       hl: 'vi'
     })
@@ -52,6 +57,7 @@ router.get('/relatedQueries', async (req, res, next) => {
     const keyword = req.query.keyword || ''
     const data = await googleTrends.relatedQueries({
       keyword,
+      resolution: 'COUNTRY',
       geo: 'VN',
       hl: 'vi'
     })
@@ -66,6 +72,7 @@ router.get('/realTimeTrends', async (req, res, next) => {
   try {
     const data = await googleTrends.realTimeTrends({
       category: 'all',
+      resolution: 'COUNTRY',
       geo: 'VN',
       hl: 'vi'
     })
@@ -79,7 +86,8 @@ router.get('/realTimeTrends', async (req, res, next) => {
 router.get('/dailyTrends', async (req, res, next) => {
   try {
     const data = await googleTrends.dailyTrends({
-      trendDate: new Date('2019-01-10'),
+      trendDate: new Date(),
+      resolution: 'COUNTRY',
       geo: 'VN',
       hl: 'vi'
     })
