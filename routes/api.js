@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const googleTrends = require('google-trends-api')
+const utils = require('../common/utils')
 
 router.get('/autoComplete', async (req, res, next) => {
   try {
@@ -25,7 +26,10 @@ router.get('/interestOverTime', async (req, res, next) => {
       keyword,
       resolution: 'COUNTRY',
       geo: 'VN',
-      hl: 'vi'
+      hl: 'vi',
+      startTime: new Date(utils.getToday() - 12 * utils.HOUR),
+      endTime: utils.getToday(),
+      granularTimeResolution: true
     })
     res.send(data)
   } catch (error) {
@@ -39,7 +43,7 @@ router.get('/interestByRegion', async (req, res, next) => {
     const keyword = req.query.keyword || ''
     const data = await googleTrends.interestByRegion({
       keyword,
-      startTime: new Date(new Date().getTime() - 86400000),
+      startTime: new Date(new Date().getTime() - utils.DAY),
       endTime: new Date(),
       resolution: 'COUNTRY',
       geo: 'VN',
@@ -70,11 +74,12 @@ router.get('/relatedQueries', async (req, res, next) => {
 
 router.get('/realTimeTrends', async (req, res, next) => {
   try {
+    const { region, lang } = req.query
     const data = await googleTrends.realTimeTrends({
       category: 'all',
       resolution: 'COUNTRY',
-      geo: 'VN',
-      hl: 'vi'
+      geo: region,
+      hl: lang
     })
     res.send(data)
   } catch (error) {
@@ -85,11 +90,12 @@ router.get('/realTimeTrends', async (req, res, next) => {
 
 router.get('/dailyTrends', async (req, res, next) => {
   try {
+    const { region, lang } = req.query
     const data = await googleTrends.dailyTrends({
       trendDate: new Date(),
       resolution: 'COUNTRY',
-      geo: 'VN',
-      hl: 'vi'
+      geo: region,
+      hl: lang
     })
     res.send(data)
   } catch (error) {
